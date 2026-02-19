@@ -1,0 +1,15 @@
+
+> tienda_mary@1.0.0 dev
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.20.7:3000
+- Environments: .env
+
+✓ Starting...
+✓ Ready in 1648ms
+ GET /productos 200 in 1677ms (compile: 1321ms, render: 356ms)
+ GET /api/productos 200 in 2.3s (compile: 300ms, render: 2.0s)
+ POST /api/productos 201 in 451ms (compile: 65ms, render: 386ms)
+ GET /api/productos 200 in 134ms (compile: 21ms, render: 113ms)
