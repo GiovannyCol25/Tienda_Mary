@@ -1,9 +1,18 @@
 @import "tailwindcss";
 
+:root {
+  --mary-bg: #eccfec;
+  --mary-surface: #ffe7ff;
+  --mary-primary: #b185b4;
+  --mary-primary-strong: #9a709d;
+  --mary-secondary: #c59ec7;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
+  background: var(--mary-bg);
 }
 
 * {
