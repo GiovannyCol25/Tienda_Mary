@@ -1,6 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
-let browserClient: ReturnType<typeof createClient> | null = null;
+let browserClient: ReturnType<typeof createBrowserClient> | null = null;
 
 export function getSupabaseBrowserClient() {
   if (browserClient) return browserClient;
@@ -12,6 +12,6 @@ export function getSupabaseBrowserClient() {
     throw new Error('Faltan NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY');
   }
 
-  browserClient = createClient(url, anonKey);
+  browserClient = createBrowserClient(url, anonKey);
   return browserClient;
 }

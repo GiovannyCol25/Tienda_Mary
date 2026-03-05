@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2, LockKeyhole, Mail } from 'lucide-react';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
@@ -11,25 +11,6 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [checkingSession, setCheckingSession] = useState(true);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const supabase = getSupabaseBrowserClient();
-        const { data } = await supabase.auth.getSession();
-        if (data.session) {
-          router.replace('/productos');
-        }
-      } catch {
-        setErrorMsg('Configuracion incompleta de Supabase en variables de entorno.');
-      } finally {
-        setCheckingSession(false);
-      }
-    };
-
-    void checkSession();
-  }, [router]);
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,17 +37,6 @@ export default function Login() {
       setIsLoading(false);
     }
   };
-
-  if (checkingSession) {
-    return (
-      <main className="grid min-h-screen place-items-center bg-[var(--mary-bg)] p-4">
-        <div className="flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-[var(--mary-primary)] shadow">
-          <Loader2 size={20} className="animate-spin" />
-          <span>Validando sesion...</span>
-        </div>
-      </main>
-    );
-  }
 
   return (
     <main className="relative grid min-h-screen place-items-center overflow-hidden bg-[var(--mary-bg)] p-4">
