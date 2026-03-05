@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Search, Package, Plus, Trash2, Edit3, Loader2, X, Save, AlertTriangle, Filter } from 'lucide-react';
+import LogoutButton from '@/components/auth/logout-button';
 
 export default function ProductosPage() {
   const [productos, setProductos] = useState<any[]>([]);
@@ -183,12 +184,15 @@ export default function ProductosPage() {
             <h2 className="text-2xl font-bold text-[#B185B4] sm:text-3xl">Gestion de Productos</h2>
             <p className="text-sm text-[#9a709d] sm:text-base">Panel de administracion Mary</p>
           </div>
-          <button 
-            onClick={handleOpenCreate}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#B185B4] px-6 py-3 text-white shadow-lg transition-all active:scale-95 hover:bg-[#9a709d] sm:w-auto"
-          >
-            <Plus size={20} /> Nuevo Producto
-          </button>
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+            <button
+              onClick={handleOpenCreate}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#B185B4] px-6 py-3 text-white shadow-lg transition-all active:scale-95 hover:bg-[#9a709d] sm:w-auto"
+            >
+              <Plus size={20} /> Nuevo Producto
+            </button>
+            <LogoutButton className="flex w-full items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 font-bold text-[#9a709d] shadow-lg transition-all hover:bg-[#f8ebf9] sm:w-auto" />
+          </div>
         </header>
 
         {/* BARRA DE FILTROS */}
