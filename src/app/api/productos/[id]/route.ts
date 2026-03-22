@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { ProductService } from '@/server/services/product.service';
+import { UpdateProductSchema } from '@/server/dtos/product.dto';
 
 const productService = new ProductService();
 
@@ -25,10 +26,18 @@ export async function PATCH(
 ) {
   try {
     const { id: idParam } = await params;
-    const id = parseInt(idParam);
+    const id = Number(idParam);
+    if (!Number.isFinite(id)) {
+      return NextResponse.json({ error: 'ID de producto invalido' }, { status: 400 });
+    }
     const body = await request.json();
-    
-    const updatedProduct = await productService.updateProduct(id, body);
+
+    const validatedData = UpdateProductSchema.parse(body);
+    if (Object.keys(validatedData).length === 0) {
+      return NextResponse.json({ error: 'No hay datos para actualizar' }, { status: 400 });
+    }
+
+    const updatedProduct = await productService.updateProduct(id, validatedData);
     return NextResponse.json(updatedProduct, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 400 });

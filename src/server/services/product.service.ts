@@ -1,5 +1,5 @@
 import { ProductRepository } from '@/server/repositories/product.repository';
-import { CreateProductDTO } from '@/server/dtos/product.dto';
+import { CreateProductDTO, UpdateProductDTO } from '@/server/dtos/product.dto';
 
 export class ProductService {
   private repository: ProductRepository;
@@ -42,8 +42,18 @@ export class ProductService {
   /**
    * Actualiza un producto verificando primero su existencia
    */
-  async updateProduct(id: number, data: Partial<CreateProductDTO>) {
-    await this.getProductById(id);
+  async updateProduct(id: number, data: UpdateProductDTO) {
+    const current = await this.getProductById(id);
+
+    const nextPrecioVenta =
+      data.precio_venta !== undefined ? data.precio_venta : Number(current.precio_venta);
+    const nextPrecioCosto =
+      data.precio_costo !== undefined ? data.precio_costo : Number(current.precio_costo);
+
+    if (nextPrecioVenta <= nextPrecioCosto) {
+      throw new Error('El precio de venta debe ser mayor al precio de costo para asegurar rentabilidad.');
+    }
+
     return await this.repository.update(id, data);
   }
 
