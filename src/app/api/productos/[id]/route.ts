@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { ProductService } from '@/server/services/product.service';
 import { UpdateProductSchema } from '@/server/dtos/product.dto';
+import { getSupabaseServerClient } from '@/lib/supabase/server';
 
 const productService = new ProductService();
 
@@ -37,8 +38,28 @@ export async function PATCH(
       return NextResponse.json({ error: 'No hay datos para actualizar' }, { status: 400 });
     }
 
-    const updatedProduct = await productService.updateProduct(id, validatedData);
-    return NextResponse.json(updatedProduct, { status: 200 });
+    const supabase = getSupabaseServerClient();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
+
+    const { data, error } = await supabase
+      .from('productos')
+      .update(validatedData)
+      .eq('id_producto', id)
+      .select()
+      .single();
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    return NextResponse.json(data, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
