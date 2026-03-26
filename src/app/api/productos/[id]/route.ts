@@ -38,7 +38,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'No hay datos para actualizar' }, { status: 400 });
     }
 
-    const supabase = getSupabaseServerClient();
+    const supabase = await getSupabaseServerClient();
     const {
       data: { user },
       error: userError,
