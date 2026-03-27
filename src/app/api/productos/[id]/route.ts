@@ -52,18 +52,17 @@ export async function PATCH(
       .from('productos')
       .update(validatedData)
       .eq('id_producto', id)
-      .select()
-      .maybeSingle();
+      .select();
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    if (!data) {
+    if (!Array.isArray(data) || data.length === 0) {
       return NextResponse.json({ error: 'Producto no encontrado' }, { status: 404 });
     }
 
-    return NextResponse.json(data, { status: 200 });
+    return NextResponse.json(data[0], { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
@@ -95,14 +94,13 @@ export async function DELETE(
       .from('productos')
       .delete()
       .eq('id_producto', id)
-      .select()
-      .maybeSingle();
+      .select();
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    if (!data) {
+    if (!Array.isArray(data) || data.length === 0) {
       return NextResponse.json({ error: 'Producto no encontrado' }, { status: 404 });
     }
 
