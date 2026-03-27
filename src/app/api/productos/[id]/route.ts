@@ -53,10 +53,14 @@ export async function PATCH(
       .update(validatedData)
       .eq('id_producto', id)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    if (!data) {
+      return NextResponse.json({ error: 'Producto no encontrado' }, { status: 404 });
     }
 
     return NextResponse.json(data, { status: 200 });
@@ -73,7 +77,35 @@ export async function DELETE(
   try {
     const { id: idParam } = await params;
     const id = parseInt(idParam);
-    await productService.deleteProduct(id);
+    if (!Number.isFinite(id)) {
+      return NextResponse.json({ error: 'ID de producto invalido' }, { status: 400 });
+    }
+
+    const supabase = await getSupabaseServerClient();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
+
+    const { data, error } = await supabase
+      .from('productos')
+      .delete()
+      .eq('id_producto', id)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    if (!data) {
+      return NextResponse.json({ error: 'Producto no encontrado' }, { status: 404 });
+    }
+
     return NextResponse.json({ message: 'Producto eliminado correctamente' }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 400 });
