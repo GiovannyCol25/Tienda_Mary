@@ -34,7 +34,10 @@ export async function PATCH(
     const body = await request.json();
 
     const validatedData = UpdateProductSchema.parse(body);
-    if (Object.keys(validatedData).length === 0) {
+    const updates = Object.fromEntries(
+      Object.entries(validatedData).filter(([, value]) => value !== undefined)
+    );
+    if (Object.keys(updates).length === 0) {
       return NextResponse.json({ error: 'No hay datos para actualizar' }, { status: 400 });
     }
 
@@ -50,7 +53,7 @@ export async function PATCH(
 
     const { data, error } = await supabase
       .from('productos')
-      .update(validatedData)
+      .update(updates)
       .eq('id_producto', id)
       .select();
 
