@@ -62,7 +62,21 @@ export async function PATCH(
     }
 
     if (!Array.isArray(data) || data.length === 0) {
-      return NextResponse.json({ error: 'Producto no encontrado' }, { status: 404 });
+      const { data: existing, error: findError } = await supabase
+        .from('productos')
+        .select()
+        .eq('id_producto', id)
+        .maybeSingle();
+
+      if (findError) {
+        return NextResponse.json({ error: findError.message }, { status: 400 });
+      }
+
+      if (!existing) {
+        return NextResponse.json({ error: 'Producto no encontrado' }, { status: 404 });
+      }
+
+      return NextResponse.json(existing, { status: 200 });
     }
 
     return NextResponse.json(data[0], { status: 200 });
